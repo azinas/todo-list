@@ -1,9 +1,10 @@
-import { useState } from "react";
-import "./App.css";
-import { Button } from "@/components/ui/button";
-import { useSelector, useDispatch } from "react-redux";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { addList, deleteItem, editItem } from "./slice";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "./components/ui/input";
+import { useState } from "react";
 
 function App() {
   const [task, setTask] = useState<string>("");
@@ -57,62 +58,73 @@ function App() {
   }
 
   return (
-    <div className="">
-      <div>
-        <div className="h-[60vh] w-[40vw] py-2 border-2 border-gray-50 rounded-xl shadow-xl shadow-gray-200 mx-auto ">
-          <div className="h-5/6 scroll-auto">
+    <div className="flex-grow flex flex-col max-w-md w-full bg-white border rounded-xl m-2 my-4">
+      <div className="flex-grow flex flex-col scroll-auto">
+        {list.length === 0 ? (
+          <div className="p-8 flex-grow gap-4 justify-center items-center flex flex-col">
+            <img src="/no-data.svg" className="size-48" alt="empty" />
+            <span className="text-neutral-500">No data.</span>
+          </div>
+        ) : (
+          <div className="flex flex-col w-full gap-2 p-3 px-2">
             {list.map((item: string, index: number) => (
-              <div key={index} className=" flex flex-col w-full ">
-                <div className="flex flex-row w-[95%] border-2  border-gray-50  p-2 mx-3  my-1 shadow-md rounded-full">
-                  <div  className="m-auto">
-                    <div className="flex items-center m-auto rounded-full dark:border-gray-700">
-                      <input
-                        defaultChecked={checked}
-                        id={`success-checkbox-${index}`}
-                        type="checkbox"
-                        onChange={() => setChecked((state) => !state)}
-                        className="bg-[#16516d]! text-white  rounded-full! border-8"
-                      />
-                    </div>
-                  </div>
-                  <div className=" w-4/6 h-[40px] text-center text-left align-text-bottom">{item} </div>
-                  <Button
+              <div
+                key={"item_" + index}
+                className="grid grid-cols-[1fr_58px] items-center gap-3"
+              >
+                <label className="peer grid grid-cols-[auto_1fr] items-center py-2 gap-3 rounded-md px-3 hover:bg-gray-100 dark:hover:bg-white/5">
+                  <input
+                    className="peer size-3.5 appearance-none rounded-[2px] border border-gray-300 accent-[#6c63ff] checked:appearance-auto dark:border-gray-600 dark:accent-[#6c63ff]"
+                    type="checkbox"
+                    defaultChecked={checked}
+                    id={`success-checkbox-${index}`}
+                    onChange={() => setChecked((state) => !state)}
+                  />
+                  <span className="text-gray-700 select-none peer-checked:text-gray-400 peer-checked:line-through dark:text-gray-300">
+                    {item}
+                  </span>
+                </label>
+                <div className="peer-has-checked:hidden flex flex-row items-center gap-1 pr-2">
+                  <button
+                    type="button"
                     onClick={() => {
                       setEditText(item);
                       setEditIndex(index);
                     }}
-                    className="bg-[#16516d]! text-white  rounded-full! border-8 w-[40px] h-[40px]"
+                    className="size-[26px] rounded-md p-1 peer-has-checked:hidden hover:bg-[#6c63ff]/10 hover:text-[#6c63ff]"
                   >
-                    <Pencil />
-                  </Button>
-                  <Button
+                    <Pencil className="size-4" />
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => deleteInput(index)}
-                    className="bg-[#16516d]! text-white ml-1 rounded-full! border-8 w-[40px] h-[40px]"
+                    className="size-[26px] rounded-md p-1 peer-has-checked:hidden hover:bg-[#6c63ff]/10 hover:text-[#6c63ff]"
                   >
-                    <Trash2 />
-                  </Button>
+                    <Trash2 className="size-4" />
+                  </button>
                 </div>
                 {editText && index === editIndex && editInput(item, index)}
               </div>
             ))}
           </div>
-          <div className="flex flex-row h-1/5 border-2 h-[60px] border-gray-50  p-2 mx-3  my-1 shadow-md rounded-full">
-            <input
-              className=" w-[95%] border-none! !outline-none "
-              onChange={(e) => setTask(e.target.value)}
-              value={task}
-            ></input>
-            <div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="bg-[#16516d]! text-white  rounded-full! border-8 w-[40px] h-[40px]"
-                onClick={addItem}
-              >
-                <Plus className=" text-white" />
-              </Button>
-            </div>
-          </div>
+        )}
+      </div>
+      <div className="flex flex-row items-center border gap-2 p-2 m-2 rounded-lg overflow-hidden">
+        <Input
+          className="flex-grow border-none! shadow-none! ring-0! outline-none!"
+          onChange={(e) => setTask(e.target.value)}
+          placeholder="Write your task"
+          value={task}
+        />
+        <div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="bg-[#6c63ff]! text-white border-none!"
+            onClick={addItem}
+          >
+            <Plus className="size-6 text-white" />
+          </Button>
         </div>
       </div>
     </div>
